@@ -1,0 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800;900&family=Roboto:wght@100;300;400;500;700;900&display=swap');
+
+.App{
+    width: 600px;
+    background-image: linear-gradient(to right, rgb(95, 132, 255), rgb(32, 84, 255));
+    font-family: 'Poppins', sans-serif;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#inputID::placeholder {
+    color: #b8b8b8;
+    opacity: 1;
+    /* padding-left: 10px; */
+}
