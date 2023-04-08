@@ -1,7 +1,19 @@
 import React from "react";
 import TimeAndTemperature from "./TimeAndTemperature";
 
-function HourlyForecast() {
+function HourlyForecast(props) {
+  function formatAMPM(date) {
+    date = new Date(date);
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+    var ampm = hours >= 12 ? "pm" : "am";
+    hours = hours % 12;
+    hours = hours ? hours : 12; // the hour '0' should be '12'
+    minutes = minutes < 10 ? "0" + minutes : minutes;
+    var strTime = hours + ":" + minutes + " " + ampm;
+    return strTime;
+  }
+
   return (
     <div>
       <div
@@ -16,11 +28,18 @@ function HourlyForecast() {
         HOURLY FORECAST
       </div>
       <div style={{ display: "flex", justifyContent: "space-evenly" }}>
-        <TimeAndTemperature />
-        <TimeAndTemperature />
-        <TimeAndTemperature />
-        <TimeAndTemperature />
-        <TimeAndTemperature />
+        {props.data.list.map((obj, index) => {
+          if (index < 5) {
+            return (
+              <TimeAndTemperature
+                time={formatAMPM(obj.dt * 1000)}
+                temp={parseInt(obj.main.temp)}
+                icon={obj.weather[0].icon}
+                key={index}
+              />
+            );
+          }
+        })}
       </div>
     </div>
   );
