@@ -14,10 +14,11 @@ function App() {
   const [latitude, setLatitude] = useState("13.0878");
   const [weather, setWeather] = useState();
   const [hourly, setHourly] = useState();
+  let apiID = "";
 
   const callAPI = async () => {
     let response = await fetch(
-      `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=de6d925edb9ca54b75348b6cca86fb57&units=${unit}`
+      `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiID}&units=${unit}`
     );
     response = await response.json();
     setWeather(response);
@@ -29,7 +30,7 @@ function App() {
   const callHourly = async () => {
     // console.log("Calling API");
     let response = await fetch(
-      `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=0938d31cb3849c0ff0809fd4da8452e9&units=${unit}`
+      `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${apiID}&units=${unit}`
     );
     response = await response.json();
     setHourly(response);
@@ -38,7 +39,7 @@ function App() {
   const callLatitudeLongitude = async () => {
     console.log(city, longitude, latitude);
     let response = await fetch(
-      `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=0938d31cb3849c0ff0809fd4da8452e9&units=${unit}`
+      `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiID}&units=${unit}`
     );
     response = await response.json();
     setCity(response.name);
