@@ -2,32 +2,49 @@ import React, { useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import "./../style.css";
+const apiID = process.env.REACT_APP_API_KEY;
 
 function Input(props) {
-  const [temp, setTemp] = useState(props.city);
+  const [temp, setTemp] = useState();
   const [hover, setHover] = useState(false);
 
   // white typing
   const handleChange = (e) => {
     setTemp(e.target.value);
-    // console.log(temp);
   };
+
   // when clicked
-  const handleSearchButton = () => {
-    // console.log("temp = ", temp);
-    // console.log(" city = ", props.city);
-    if (props.city.toLowerCase() !== temp.toLowerCase()) {
-      props.setCity(temp.charAt(0).toUpperCase() + temp.slice(1));
+  const handleSearchButton = async () => {
+    try {
+      props.setLoading(true);
+      let response = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?q=${temp}&appid=${apiID}&units=${props.unit}`
+      );
+      if (!response.ok) throw "Wrong city name";
+      response = await response.json();
+      props.setWeather(response);
+      props.setWeather(response);
+      props.setLatitude(response.coord.lat);
+      props.setLongitude(response.coord.lon);
+      setTemp("");
+    } catch (err) {
+      alert(err);
+      setTemp("");
+    } finally {
+      props.setLoading(false);
     }
   };
+
   // when mouse enters the div area
   const handleMouseEnter = () => {
     setHover(true);
   };
+
   //   when mouse leaves the div area
   const handleMouseLeave = () => {
     setHover(false);
   };
+
   // style for Div
   const styleForDiv = {
     display: "flex",
@@ -35,18 +52,23 @@ function Input(props) {
     height: "60px",
     alignItems: "center",
   };
+
   const style1 = {
     cursor: "pointer",
   };
   const style2 = {};
 
   const handleLocatioClick = () => {
+    props.setLoading(true);
     navigator.geolocation.getCurrentPosition((position) => {
       const p = position.coords;
-      // console.log(p.latitude, p.longitude);
       props.setLatitude(p.latitude);
       props.setLongitude(p.longitude);
+      props.setLoading(false);
     });
+    setTimeout(() => {
+      props.setLoading(false);
+    }, 20000);
   };
 
   return (
@@ -55,6 +77,7 @@ function Input(props) {
         id="inputID"
         style={{ width: "300px", height: "25px", outline: "none" }}
         placeholder="search..."
+        value={temp}
         onChange={handleChange}
       />
       <SearchIcon

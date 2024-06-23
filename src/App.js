@@ -6,6 +6,12 @@ import Weather from "./component/Weather";
 import HourlyForecast from "./component/HourlyForecast";
 import DailyForecast from "./component/DailyForecast";
 import { useEffect, useState } from "react";
+import { OrbitProgress } from "react-loading-indicators";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { getWeatherAction, getWeatherColor } from "./utils.js/mapping";
+
+export default App;
 
 function App() {
   const [city, setCity] = useState("Chennai");
@@ -14,40 +20,62 @@ function App() {
   const [latitude, setLatitude] = useState("13.0878");
   const [weather, setWeather] = useState();
   const [hourly, setHourly] = useState();
-  let apiID = "";
+  const apiID = process.env.REACT_APP_API_KEY;
+  const [loading, setLoading] = useState(true);
+
+  const showNotification = (weatherCode) => {
+    const action = getWeatherAction(weatherCode);
+    if (action) {
+      toast.info(action, { autoClose: 8000 });
+    }
+  };
 
   const callAPI = async () => {
-    let response = await fetch(
-      `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiID}&units=${unit}`
-    );
-    response = await response.json();
-    setWeather(response);
-    setLatitude(response.coord.lat);
-    setLongitude(response.coord.lon);
-    // console.log("Calling API", city, response.coord.lon, response.coord.lat);
-    // console.log("Response = ", response);
+    try {
+      const response = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiID}&units=${unit}`
+      );
+      if (!response.ok) throw new Error("City not found");
+      const data = await response.json();
+      setWeather(data);
+      setLatitude(data.coord.lat);
+      setLongitude(data.coord.lon);
+    } catch (error) {
+      alert(error.message);
+    } finally {
+      setLoading(false);
+    }
   };
+
   const callHourly = async () => {
-    // console.log("Calling API");
-    let response = await fetch(
-      `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${apiID}&units=${unit}`
-    );
-    response = await response.json();
-    setHourly(response);
-    // console.log("Response = ", response);
+    try {
+      const response = await fetch(
+        `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${apiID}&units=${unit}`
+      );
+      if (!response.ok) throw new Error("Error fetching forecast data");
+      const data = await response.json();
+      setHourly(data);
+    } catch (error) {
+      alert(error.message);
+    } finally {
+      setLoading(false);
+    }
   };
+
   const callLatitudeLongitude = async () => {
-    console.log(city, longitude, latitude);
-    let response = await fetch(
-      `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiID}&units=${unit}`
-    );
-    response = await response.json();
-    setCity(response.name);
-    setWeather(response);
-    console.log(city, response.coord.lon, response.coord.lat);
-    console.log(city, response.name);
-    // setLatitude(response.coord.lat);
-    // setLongitude(response.coord.lon);
+    try {
+      const response = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiID}&units=${unit}`
+      );
+      if (!response.ok) throw new Error("Error fetching location data");
+      const data = await response.json();
+      setCity(data.name);
+      setWeather(data);
+    } catch (error) {
+      alert(error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -56,29 +84,54 @@ function App() {
   }, [city, unit]);
 
   useEffect(() => {
-    console.log("lon change", longitude, latitude, city);
+    // console.log("lon change", longitude, latitude, city);
     callLatitudeLongitude();
     callHourly();
   }, [longitude, latitude]);
 
+  useEffect(() => {
+    if (weather) {
+      const weatherCode = weather.weather[0].id;
+      showNotification(weatherCode);
+      // console.log("weather code " + weatherCode);
+    }
+  }, [weather]);
+
+  if (loading) {
+    return (
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+        <OrbitProgress variant="dotted" color="#505fcb" size="medium" text="Loading" textColor="" />
+      </div>
+    );
+  }
+
   return (
-    <div style={{ display: "flex", justifyContent: "center" }}>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        backgroundColor: getWeatherColor(weather.weather[0].id),
+        height: "100vh",
+      }}
+    >
+      <ToastContainer />
       <div className="App">
         <div>
           <CityHeader setCity={setCity} city={city} />
-
           <Input
             setCity={setCity}
             city={city}
+            unit={unit}
+            loading={loading}
             setLatitude={setLatitude}
             setLongitude={setLongitude}
             setUnit={setUnit}
+            setWeather={setWeather}
+            setLoading={setLoading}
           />
-
           {weather && hourly && (
             <TimeAndDate weather={weather.weather[0].main} city={city} country={weather.sys.country} />
           )}
-
           {weather && hourly && (
             <Weather
               main={weather.main}
@@ -89,14 +142,10 @@ function App() {
               img={weather.weather[0].icon}
             />
           )}
-
           {weather && hourly && <HourlyForecast data={hourly} />}
-
           {weather && hourly && <DailyForecast data={hourly} />}
         </div>
       </div>
     </div>
   );
 }
-
-export default App;
