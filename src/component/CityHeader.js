@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import CityNameInHeader from "./CityNameInHeader";
 
 function CityHeader(props) {

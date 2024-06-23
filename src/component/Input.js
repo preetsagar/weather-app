@@ -20,7 +20,7 @@ function Input(props) {
       let response = await fetch(
         `https://api.openweathermap.org/data/2.5/weather?q=${temp}&appid=${apiID}&units=${props.unit}`
       );
-      if (!response.ok) throw "Wrong city name";
+      if (!response.ok) throw new Error("City not found");
       response = await response.json();
       props.setWeather(response);
       props.setWeather(response);

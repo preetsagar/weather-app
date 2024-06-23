@@ -28,7 +28,7 @@ function Weather(props) {
       <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-around", alignItems: "center" }}>
         <div>
           {/* <WbTwilightOutlinedIcon /> */}
-          <img src={`https://openweathermap.org/img/wn/${props.img}@2x.png`} />
+          <img src={`https://openweathermap.org/img/wn/${props.img}@2x.png`} alt="img" />
         </div>
         <div style={{ fontSize: "30px" }}>{parseInt(props.main.temp)}°</div>
 

@@ -1,5 +1,4 @@
 import React from "react";
-import LightModeIcon from "@mui/icons-material/LightMode";
 
 function TimeAndTemperature(props) {
   return (

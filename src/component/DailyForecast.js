@@ -43,9 +43,7 @@ function DailyForecast(props) {
       <div style={{ display: "flex", justifyContent: "space-evenly", paddingBottom: "60px" }}>
         {/* <DayAndTemperature time={props.data.list[0].dt} temp={parseInt(props.data.list[0].main.temp)} /> */}
         {dailyArr.map((obj, index) => {
-          if (index < 5) {
-            return <DayAndTemperature day={obj.day} temp={obj.temp} key={index} icon={obj.icon} />;
-          }
+          return <DayAndTemperature day={obj.day} temp={obj.temp} key={index} icon={obj.icon} />;
         })}
       </div>
     </div>
