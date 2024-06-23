@@ -7,7 +7,7 @@ function TimeAndTemperature(props) {
     >
       <div>{props.time}</div>
       <div>
-        <img src={`https://openweathermap.org/img/wn/${props.icon}@2x.png`} style={{ height: "35px" }} />
+        <img src={`https://openweathermap.org/img/wn/${props.icon}@2x.png`} style={{ height: "35px" }} alt="img" />
       </div>
       <div>{props.temp}°</div>
     </div>
