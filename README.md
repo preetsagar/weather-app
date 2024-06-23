@@ -1,6 +1,6 @@
 # React Weather App
 
-![Weather App Screenshot](./public/weatherApp.png)
+![Weather App Screenshot](./public/ScreenshotWeatherApp.png)
 
 A simple React application that displays current weather and forecasts based on OpenWeatherMap API.
 
