@@ -11,8 +11,6 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { getWeatherAction, getWeatherColor } from "./utils.js/mapping";
 
-export default App;
-
 function App() {
   const [city, setCity] = useState("Chennai");
   const [unit, setUnit] = useState("metric");
@@ -81,7 +79,7 @@ function App() {
       );
       if (!response.ok) throw new Error("Error fetching location data");
       const data = await response.json();
-      if (city != data.name) setCity(data.name);
+      if (city !== data.name) setCity(data.name);
       setWeather(data);
     } catch (error) {
       alert(error.message);
@@ -91,29 +89,21 @@ function App() {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     callAPI();
   }, [city, unit]);
+
   useEffect(() => {
-    // console.log("lon change", longitude, latitude, city);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     callLatitudeLongitude();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     callHourly();
   }, [longitude, latitude]);
-  // useEffect(() => {
-  //   callAPI();
-  //   callHourly();
-  // }, [city, unit]);
-
-  // useEffect(() => {
-  //   // console.log("lon change", longitude, latitude, city);
-  //   callLatitudeLongitude();
-  //   callHourly();
-  // }, [longitude, latitude]);
 
   useEffect(() => {
     if (weather) {
       const weatherCode = weather.weather[0].id;
       showNotification(weatherCode);
-      // console.log("weather code " + weatherCode);
     }
   }, [weather]);
 
@@ -124,25 +114,6 @@ function App() {
     return () => clearInterval(intervalId);
   }, []);
 
-  // useEffect(() => {
-  //   refreshData(); // Call refreshData on component mount
-  // }, []);
-
-  // useEffect(() => {
-  //   if (weather) {
-  //     const weatherCode = weather.weather[0].id;
-  //     showNotification(weatherCode);
-  //   }
-  // }, [weather]);
-
-  // useEffect(() => {
-  //   const intervalId = setInterval(refreshData, 1000 * 60 * 15); // Refresh every 15 minutes
-
-  //   // Cleanup function to clear interval on component unmount
-  //   return () => clearInterval(intervalId);
-  // }, []);
-
-  // Loading Screen
   if (loading) {
     return (
       <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
@@ -195,3 +166,5 @@ function App() {
     </div>
   );
 }
+
+export default App;
