@@ -81,7 +81,7 @@ function App() {
       );
       if (!response.ok) throw new Error("Error fetching location data");
       const data = await response.json();
-      setCity(data.name);
+      if (city != data.name) setCity(data.name);
       setWeather(data);
     } catch (error) {
       alert(error.message);
@@ -92,14 +92,22 @@ function App() {
 
   useEffect(() => {
     callAPI();
-    callHourly();
   }, [city, unit]);
-
   useEffect(() => {
     // console.log("lon change", longitude, latitude, city);
     callLatitudeLongitude();
     callHourly();
   }, [longitude, latitude]);
+  // useEffect(() => {
+  //   callAPI();
+  //   callHourly();
+  // }, [city, unit]);
+
+  // useEffect(() => {
+  //   // console.log("lon change", longitude, latitude, city);
+  //   callLatitudeLongitude();
+  //   callHourly();
+  // }, [longitude, latitude]);
 
   useEffect(() => {
     if (weather) {
@@ -115,6 +123,24 @@ function App() {
     // Cleanup function to clear interval on component unmount
     return () => clearInterval(intervalId);
   }, []);
+
+  // useEffect(() => {
+  //   refreshData(); // Call refreshData on component mount
+  // }, []);
+
+  // useEffect(() => {
+  //   if (weather) {
+  //     const weatherCode = weather.weather[0].id;
+  //     showNotification(weatherCode);
+  //   }
+  // }, [weather]);
+
+  // useEffect(() => {
+  //   const intervalId = setInterval(refreshData, 1000 * 60 * 15); // Refresh every 15 minutes
+
+  //   // Cleanup function to clear interval on component unmount
+  //   return () => clearInterval(intervalId);
+  // }, []);
 
   // Loading Screen
   if (loading) {
