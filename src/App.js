@@ -23,6 +23,18 @@ function App() {
   const apiID = process.env.REACT_APP_API_KEY;
   const [loading, setLoading] = useState(true);
 
+  const refreshData = async () => {
+    try {
+      setLoading(true);
+      await callAPI();
+      await callHourly();
+    } catch (error) {
+      console.error("Error refreshing data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const showNotification = (weatherCode) => {
     const action = getWeatherAction(weatherCode);
     if (action) {
@@ -97,6 +109,14 @@ function App() {
     }
   }, [weather]);
 
+  useEffect(() => {
+    const intervalId = setInterval(refreshData, 1000 * 60 * 15); // Refresh every 15 minutes
+
+    // Cleanup function to clear interval on component unmount
+    return () => clearInterval(intervalId);
+  }, []);
+
+  // Loading Screen
   if (loading) {
     return (
       <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
